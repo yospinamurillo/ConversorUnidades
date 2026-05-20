@@ -1,6 +1,3 @@
-[README.md](https://github.com/user-attachments/files/28039095/README.md)
-# ConversorUnidades
-Conversor de unidades simple
 # 🔄 Conversor de Unidades — `conversor-fisica-python`
 
 Módulo de código libre para la conversión de unidades físicas (temperatura y distancia), diseñado como herramienta de apoyo para docentes y estudiantes de física. Desarrollado sin dependencias externas.
@@ -13,6 +10,7 @@ Módulo de código libre para la conversión de unidades físicas (temperatura y
 - [Requisitos](#requisitos)
 - [Instalación y Uso](#instalación-y-uso)
 - [Flujo de Configuración](#flujo-de-configuración)
+- [Flujo de Ejecución](#flujo-de-ejecución)
 - [Ejemplo de Uso](#ejemplo-de-uso)
 - [Manejo de Errores](#manejo-de-errores)
 - [Personalización](#personalización)
@@ -22,7 +20,7 @@ Módulo de código libre para la conversión de unidades físicas (temperatura y
 
 ## Descripción
 
-`conversor-fisica-python` es un módulo de consola interactivo que permite convertir valores entre unidades de temperatura (Celsius ↔ Fahrenheit) y distancia (kilómetros ↔ millas). El sistema guía al usuario paso a paso mediante preguntas en pantalla, sin requerir ninguna librería externa.
+`conversor-fisica-python` es un módulo de consola interactivo que permite convertir valores entre unidades de temperatura (Celsius ↔ Fahrenheit) y distancia (kilómetros ↔ millas). El sistema guía al usuario a través de una interfaz por consola, solicitando la magnitud a convertir, el valor y la unidad destino.
 
 ---
 
@@ -40,8 +38,8 @@ Módulo de código libre para la conversión de unidades físicas (temperatura y
 **1. Clonar el repositorio:**
 
 ```bash
-git clone https://github.com/xxxxx/conversor-fisica-python.git
-cd conversor-fisica-python
+git clone https://github.com/yospinamurillo/ConversorUnidades.git
+cd ConversorUnidades
 ```
 
 **2. Ejecutar el programa:**
@@ -66,9 +64,103 @@ El sistema solicita tres parámetros de forma secuencial en pantalla:
 
 ---
 
+## Flujo de Ejecución
+
+### Diagrama de flujo principal
+
+```
+┌─────────────────────────────┐
+│   Inicio del Programa       │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│  Solicitar tipo_medida      │
+│  (temp / dist)              │
+└──────────────┬──────────────┘
+               │
+       ┌───────┴───────┐
+       │               │
+       ▼               ▼
+   ┌────────┐    ┌────────┐
+   │  TEMP  │    │  DIST  │
+   └───┬────┘    └───┬────┘
+       │             │
+       ▼             ▼
+┌────────────────┐ ┌────────────────┐
+│ Solicitar valor│ │ Solicitar valor│
+│  (números)    │ │  (números)     │
+└───┬────────────┘ └────┬───────────┘
+    │                   │
+    ▼                   ▼
+┌────────────────────────────────┐
+│  Solicitar unidad_destino      │
+│  (C/F para temp, KM/MI dist)   │
+└───┬───────────────────────────┬┘
+    │                           │
+    ▼ Válida                    ▼ Inválida
+┌──────────────────┐      ┌───────────────────┐
+│  Realizar Cálculo│      │ Error: Unidad no  │
+└────┬─────────────┘      │ reconocida        │
+     │                    └────────┬──────────┘
+     ▼                            │
+┌──────────────────┐              │
+│ Mostrar Resultado│              │
+└────┬─────────────┘              │
+     │                            │
+     └────────────────┬───────────┘
+                      │
+                      ▼
+          ┌──────────────────────┐
+          │   Fin del Programa   │
+          └──────────────────────┘
+```
+
+### Conversión de Temperatura (Celsius ↔ Fahrenheit)
+
+```
+┌──────────────────────────────────┐
+│  Conversión de Temperatura       │
+└──────────┬───────────────────────┘
+           │
+    ┌──────┴────────┐
+    │               │
+    ▼               ▼
+  C → F          F → C
+    │               │
+    ▼               ▼
+(C×9/5)+32    (F-32)×5/9
+    │               │
+    └───────┬───────┘
+            ▼
+      Mostrar Resultado
+```
+
+### Conversión de Distancia (KM ↔ MI)
+
+```
+┌──────────────────────────────────┐
+│  Conversión de Distancia         │
+└──────────┬───────────────────────┘
+           │
+    ┌──────┴────────┐
+    │               │
+    ▼               ▼
+  KM → MI        MI → KM
+    │               │
+    ▼               ▼
+  KM × 0.621    MI / 0.621
+    │               │
+    └───────┬───────┘
+            ▼
+      Mostrar Resultado
+```
+
+---
+
 ## Ejemplo de Uso
 
-Conversión de 100 °C a Fahrenheit:
+### Conversión de 100 °C a Fahrenheit:
 
 ```
 tipo_medida    → temp
@@ -82,6 +174,20 @@ unidad_destino → F
 Resultado: 100.00 °C equivalen a 212.00 °F.
 ```
 
+### Conversión de 10 km a millas:
+
+```
+tipo_medida    → dist
+valor_origen   → 10
+unidad_destino → MI
+```
+
+**Salida:**
+
+```
+Resultado: 10.00 KM equivalen a 6.21 MI.
+```
+
 ---
 
 ## Manejo de Errores
@@ -93,6 +199,14 @@ Si se ingresa una unidad no reconocida, el sistema interrumpe la ejecución y mu
 ```
 
 Esto previene cálculos incorrectos y orienta al usuario a ingresar un valor válido.
+
+**Casos manejados:**
+
+| Caso | Comportamiento |
+|------|---|
+| Unidad no válida | Se muestra alerta y se interrumpe la ejecución |
+| Valor no numérico | Sistema solicita reintentar la entrada |
+| Tipo de medida inválido | Se solicita ingresar `temp` o `dist` |
 
 ---
 
@@ -108,6 +222,16 @@ Los docentes pueden modificar este valor directamente en el código para obtener
 
 ```python
 DECIMALES_MOSTRADOS = 4
+```
+
+**Ejemplos de impacto:**
+
+```python
+# Con DECIMALES_MOSTRADOS = 2
+Resultado: 100.00 °C equivalen a 212.00 °F.
+
+# Con DECIMALES_MOSTRADOS = 4
+Resultado: 100.0000 °C equivalen a 212.0000 °F.
 ```
 
 ---
